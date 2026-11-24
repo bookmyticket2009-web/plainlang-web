@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PlainLang v2.0.0 · Code in Plain English</title>
+<meta name="description" content="PlainLang is a zero-quotes, plain-English programming language with PlainLang Studio IDE and standalone .exe compilation.">
+<style>
+:root{--bg:#0d1117;--panel:#141414;--card:#1e1e1e;--accent:#007acc;--blue:#569cd6;--teal:#4ec9b0;--purple:#c586c0;--green:#6a9955;--text:#d4d4d4;--muted:#8b949e;--line:#2a2f36;--err:#f48771}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Segoe UI",system-ui,sans-serif;line-height:1.6}
+code,pre,textarea,select,.mono{font-family:"JetBrains Mono",Consolas,monospace}
+a{color:var(--blue);text-decoration:none}
+.wrap{max-width:1140px;margin:0 auto;padding:0 20px}
+section{padding:72px 0;border-top:1px solid var(--line)}
+h1,h2,h3{line-height:1.2;margin:0 0 12px}
+h2{font-size:2rem;color:#fff}
+h3{font-size:1.05rem;color:#fff}
+.sub{color:var(--muted);max-width:640px;margin:0 0 28px}
+nav{position:sticky;top:0;z-index:10;background:rgba(13,17,23,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px}
+.brand{font-weight:700;font-size:1.15rem;color:#fff;display:flex;gap:8px;align-items:center}
+.badge{font-size:.7rem;background:var(--accent);color:#fff;padding:2px 8px;border-radius:99px;font-family:"JetBrains Mono",Consolas,monospace}
+.links{display:flex;gap:20px;font-size:.92rem}
+.links a{color:var(--muted)}
+.links a:hover{color:#fff}
+.btn{display:inline-block;padding:12px 22px;border-radius:8px;font-weight:600;border:1px solid transparent;cursor:pointer;font-size:.98rem;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#1190e0}
+.btn-ghost{background:transparent;border-color:#3a414b;color:var(--text)}
+.btn-ghost:hover{border-color:var(--blue)}
+.hero{padding:88px 0 64px}
+.hero h1{font-size:3.2rem;letter-spacing:-.02em;max-width:820px}
+.hero h1 span{color:var(--teal)}
+.hero p.lead{font-size:1.15rem;color:var(--muted);max-width:680px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 12px}
+.note{font-size:.85rem;color:var(--muted)}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:48px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+.card .label{font-size:.8rem;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between}
+pre{margin:0;font-size:.88rem;white-space:pre;overflow-x:auto}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feat p{color:var(--muted);font-size:.93rem;margin:0}
+.feat h3{margin-bottom:8px}
+.pg{display:grid;grid-template-columns:1.1fr 1fr;gap:16px}
+.pane{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-height:460px}
+.pane-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;background:var(--card);border-bottom:1px solid var(--line);font-size:.85rem;color:var(--muted)}
+.editor{position:relative;flex:1;min-height:400px}
+.editor pre,.editor textarea{position:absolute;inset:0;margin:0;padding:14px;border:0;font-size:14px;line-height:1.5;white-space:pre;overflow:auto;tab-size:4;width:100%;height:100%}
+.editor textarea{background:transparent;color:transparent;caret-color:#fff;resize:none;outline:none}
+.editor pre{pointer-events:none;color:var(--text)}
+.k{color:var(--purple)}
+.b{color:var(--blue)}
+.n{color:var(--teal)}
+.c{color:var(--green)}
+#console{flex:1;margin:0;padding:14px;color:var(--teal);min-height:200px;white-space:pre-wrap}
+.err{color:var(--err)}
+.muted{color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{text-align:left;padding:7px 14px;border-top:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;background:var(--card)}
+select{background:var(--card);color:var(--text);border:1px solid #3a414b;border-radius:6px;padding:4px 8px}
+.run{background:var(--accent);color:#fff;border:0;border-radius:6px;padding:5px 14px;font-weight:600;cursor:pointer}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.tab{background:var(--card);border:1px solid var(--line);color:var(--muted);padding:8px 14px;border-radius:8px;cursor:pointer;font-family:inherit}
+.tab.on{color:#fff;border-color:var(--accent)}
+.snips{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.snip-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.copy{background:transparent;border:1px solid #3a414b;color:var(--muted);border-radius:6px;padding:3px 10px;cursor:pointer;font-size:.8rem;font-family:inherit}
+.copy:hover{color:#fff;border-color:var(--blue)}
+ol.steps{padding-left:20px;color:var(--muted)}
+ol.steps li{margin-bottom:10px}
+ol.steps strong{color:#fff}
+.cmd{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:8px 0 18px;overflow-x:auto}
+footer{border-top:1px solid var(--line);padding:36px 0;color:var(--muted);font-size:.9rem}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+footer a{color:var(--muted);margin-right:16px}
+footer a:hover{color:#fff}
+@media(max-width:860px){.pg,.compare,.grid3,.snips{grid-template-columns:1fr}.hero h1{font-size:2.2rem}.links{display:none}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">PlainLang <span class="badge">v2.0.0</span></div>
+    <div class="links">
+      <a href="#features">Features</a>
+      <a href="#playground">Playground</a>
+      <a href="#syntax">Syntax Docs</a>
+      <a href="#download">Download</a>
+      <a href="https://github.com/bookmyticket2009-web/plainlang" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>Code in Plain English. <span>Zero Quotes. Zero Setup.</span></h1>
+    <p class="lead">Write readable <code>.plain</code> scripts with no quotation marks or punctuation clutter, test them in PlainLang Studio, and compile standalone <code>.exe</code> apps—no Python installation required.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="https://github.com/bookmyticket2009-web/plainlang/releases/latest" target="_blank" rel="noopener">Download for Windows (v2.0.0)</a>
+      <a class="btn btn-ghost" href="#playground">Try Interactive Playground</a>
+      <a class="btn btn-ghost" href="https://github.com/bookmyticket2009-web/plainlang" target="_blank" rel="noopener">View on GitHub</a>
+    </div>
+    <p class="note">The installer <code>PlainLang-Setup-2.0.0-x64.exe</code> adds <code>plainlang.exe</code> to your System <code>PATH</code> and associates <code>.plain</code> files.</p>
+
+    <div class="compare">
+      <div class="card">
+        <div class="label"><span>Python</span><span>5 lines · quotes everywhere</span></div>
+        <pre><code><span class="b">scores</span> = [<span class="n">90</span>, <span class="n">75</span>, <span class="n">88</span>]
+<span class="b">total</span> = <span class="n">0</span>
+<span class="k">for</span> score <span class="k">in</span> scores:
+    total += score
+<span class="k">print</span>(<span class="n">"Total is "</span> + <span class="k">str</span>(total))</code></pre>
+      </div>
+      <div class="card">
+        <div class="label"><span>PlainLang</span><span>6 lines · zero quotes</span></div>
+        <pre><code><span class="k">Create list</span> scores
+<span class="k">Append</span> <span class="n">90</span> <span class="k">to</span> scores
+<span class="k">Append</span> <span class="n">75</span> <span class="k">to</span> scores
+<span class="k">Append</span> <span class="n">88</span> <span class="k">to</span> scores
+<span class="k">Sum of</span> scores <span class="k">into</span> total
+<span class="b">Print</span> Total is total</code></pre>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="playground">
+  <div class="wrap">
+    <h2>Interactive Browser Playground</h2>
+    <p class="sub">A live interpreter running right in this page. Edit the script, pick a preset, then press <strong>Run (F5)</strong>.</p>
+    <div class="pg">
+      <div class="pane">
+        <div class="pane-head">
+          <span>script.plain</span>
+          <span style="display:flex;gap:10px;align-items:center">
+            <select id="preset" aria-label="Preset examples"></select>
+            <button class="run" id="runBtn">Run (F5)</button>
+          </span>
+        </div>
+        <div class="editor">
+          <pre id="hl" aria-hidden="true"></pre>
+          <textarea id="code" spellcheck="false" aria-label="PlainLang code editor"></textarea>
+        </div>
+      </div>
+      <div class="pane">
+        <div class="pane-head"><span>Output Console</span><span>PlainLang Studio</span></div>
+        <pre id="console"></pre>
+        <div class="pane-head"><span>Variables Inspector</span><span></span></div>
+        <table>
+          <thead><tr><th>Name</th><th>Value</th><th>Type</th></tr></thead>
+          <tbody id="vars"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <h2>Everything you need, in English</h2>
+    <p class="sub">Readable by anyone, powerful enough for real scripts.</p>
+    <div class="grid3">
+      <div class="card feat"><h3>Zero-Quotes Syntax</h3><p>Write natural text and variables (<code>Print Hello name from city</code>) without string delimiters or semicolons.</p></div>
+      <div class="card feat"><h3>PlainLang Studio IDE</h3><p>Built-in desktop editor with live variable and object inspection, syntax highlighting, and one-click <code>.exe</code> compilation.</p></div>
+      <div class="card feat"><h3>Full Control Flow &amp; Functions</h3><p><code>If / Else if / Else</code>, <code>While</code>, <code>Repeat</code>, <code>For each</code>, <code>Define / Do / Return</code>, and <code>Try / Catch</code> error handling.</p></div>
+      <div class="card feat"><h3>Lists, Objects &amp; JSON</h3><p>Native list manipulation, dot-notation dictionaries (<code>user.name</code>), <code>Parse json</code>, and <code>To json</code>.</p></div>
+      <div class="card feat"><h3>Dynamic Python Built-ins</h3><p>Access 70+ Python built-in functions in plain English (<code>Call len with nums into count</code>, <code>Convert 255 to hex into hex_val</code>).</p></div>
+      <div class="card feat"><h3>Standalone Installer &amp; CLI</h3><p>Installs to <code>C:\Program Files\PlainLang</code>, registers <code>.plain</code> double-click execution, and runs from any terminal via <code>plainlang.exe</code>.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="syntax">
+  <div class="wrap">
+    <h2>Quick-Start &amp; Command Cheat Sheet</h2>
+    <p class="sub">Every snippet below runs as-is in the playground. Copy any of them with one click.</p>
+    <div class="tabs" id="tabs"></div>
+    <div class="snips" id="snips"></div>
+  </div>
+</section>
+
+<section id="download">
+  <div class="wrap">
+    <h2>Installation &amp; CLI Guide</h2>
+    <p class="sub">Windows users get a one-file installer. Developers can build from source with PyInstaller.</p>
+    <div class="grid3" style="grid-template-columns:1fr 1fr">
+      <div class="card">
+        <h3>Option A: Windows installer</h3>
+        <ol class="steps">
+          <li>Download <strong>PlainLang-Setup-2.0.0-x64.exe</strong> from the <a href="https://github.com/bookmyticket2009-web/plainlang/releases/latest" target="_blank" rel="noopener">latest release</a>.</li>
+          <li>Run the installer. It installs to <code>C:\Program Files\PlainLang</code>, adds <code>plainlang.exe</code> to System PATH, and associates <code>.plain</code> files.</li>
+          <li>Double-click any <code>.plain</code> file to run it, or open a terminal and run the CLI below.</li>
+        </ol>
+        <div class="cmd"><code>plainlang.exe script.plain</code></div>
+      </div>
+      <div class="card">
+        <h3>Option B: Build from source</h3>
+        <ol class="steps">
+          <li>Clone the repository and move into the project folder.</li>
+          <li>Install PyInstaller with <code>pip install pyinstaller</code>.</li>
+          <li>Build the single-file executable.</li>
+        </ol>
+        <div class="cmd"><code>git clone https://github.com/bookmyticket2009-web/plainlang</code></div>
+        <div class="cmd"><code>python -m PyInstaller --onefile --clean --noconfirm --name plainlang plainlang.py</code></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <a href="https://github.com/bookmyticket2009-web/plainlang" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/bookmyticket2009-web/plainlang/releases" target="_blank" rel="noopener">Releases</a>
+      <a href="https://github.com/bookmyticket2009-web/plainlang/issues" target="_blank" rel="noopener">Issues</a>
+    </div>
+    <div>PlainLang v2.0.0 · Open source license · See repository for details</div>
+  </div>
+</footer>
+
+<script>
+/* ---------- Interpreter ---------- */
+class Ret { constructor(v){ this.v = v; } }
+
+class Scope {
+  constructor(parent){ this.vars = Object.create(null); this.parent = parent; }
+  find(n){ let s = this; while (s){ if (n in s.vars) return s; s = s.parent; } return null; }
+  get(n){ const s = this.find(n); return s ? s.vars[n] : undefined; }
+  set(n, v){ const s = this.find(n); (s || this).vars[n] = v; }
+}
+
+const I = { out: [], fns: {}, global: null };
+
+function parse(src){
+  const lines = src.split(/\r?\n/).map((raw, i) => ({ t: raw.trim(), n: i + 1 }))
+                   .filter(l => l.t && !l.t.startsWith('#'));
+  const st = { lines, p: 0 };
+  const body = block(st, []);
+  if (st.p < lines.length) throw new Error(`Line ${lines[st.p].n}: unexpected "${lines[st.p].t}"`);
+  return body;
+}
+
+function cur(st){ return st.lines[st.p] ? st.lines[st.p].t.toLowerCase() : null; }
+
+function expectEnd(st, n){
+  if (cur(st) !== 'end') throw new Error(`Line ${n}: missing End`);
+  st.p++;
+}
+
+function endBlock(st, n){
+  const b = block(st, ['end']);
+  expectEnd(st, n);
+  return b;
+}
+
+function block(st, stops){
+  const out = [];
+  while (st.p < st.lines.length){
+    const { t, n } = st.lines[st.p];
+    const k = t.toLowerCase();
+    if (stops.includes(k)) return out;
+    if (['end', 'else', 'catch'].includes(k)) throw new Error(`Line ${n}: "${t}" has no matching block`);
+    st.p++;
+    let m;
+    if ((m = t.match(/^For each (\S+) in (.+)$/i)))        out.push({ k: 'each', n, v: m[1], list: m[2], body: endBlock(st, n) });
+    else if ((m = t.match(/^Repeat (.+) times$/i)))         out.push({ k: 'repeat', n, x: m[1], body: endBlock(st, n) });
+    else if ((m = t.match(/^While (.+)$/i)))                out.push({ k: 'while', n, c: m[1], body: endBlock(st, n) });
+    else if ((m = t.match(/^Define (\S+)(?: with (.+))?$/i)))
+      out.push({ k: 'def', n, name: m[1], params: m[2] ? m[2].split(/\s*(?:,| and )\s*/i) : [], body: endBlock(st, n) });
+    else if (/^Try$/i.test(t)){
+      const body = block(st, ['catch']);
+      if (cur(st) !== 'catch') throw new Error(`Line ${n}: Try needs a Catch`);
+      st.p++;
+      out.push({ k: 'try', n, body, handler: endBlock(st, n) });
+    }
+    else if ((m = t.match(/^If (.+)$/i))){
+      const body = block(st, ['else', 'end']);
+      let alt = null;
+      if (cur(st) === 'else'){ st.p++; alt = block(st, ['end']); }
+      expectEnd(st, n);
+      out.push({ k: 'if', n, c: m[1], body, alt });
+    }
+    else out.push({ k: 'stmt', n, t });
+  }
+  return out;
+}
+
+function exec(body, sc){ for (const s of body) step(s, sc); }
+
+function step(s, sc){
+  try {
+    switch (s.k){
+      case 'stmt': stmt(s.t, sc); break;
+      case 'each': {
+        const L = list(s.list, sc);
+        for (const it of [...L]){ sc.set(s.v, it); exec(s.body, sc); }
+        break;
+      }
+      case 'repeat': { const n = num(s.x, sc); for (let i = 0; i < n; i++) exec(s.body, sc); break; }
+      case 'while': {
+        let guard = 0;
+        while (truthy(s.c, sc)){
+          if (++guard > 100000) throw new Error('Loop limit reached (100,000 iterations)');
+          exec(s.body, sc);
+        }
+        break;
+      }
+      case 'if': if (truthy(s.c, sc)) exec(s.body, sc); else if (s.alt) exec(s.alt, sc); break;
+      case 'def': I.fns[s.name] = { params: s.params, body: s.body }; break;
+      case 'try':
+        try { exec(s.body, sc); }
+        catch (e){
+          if (e instanceof Ret) throw e;
+          sc.set('error', e.message.replace(/^Line \d+: /, ''));
+          exec(s.handler, sc);
+        }
+        break;
+    }
+  } catch (e){
+    if (e instanceof Ret) throw e;
+    if (!e.line){ e.message = `Line ${s.n}: ${e.message}`; e.line = s.n; }
+    throw e;
+  }
+}
+
+function stmt(t, sc){
+  let m;
+  if ((m = t.match(/^Set (\S+) to (.+)$/i)))            sc.set(m[1], valueOf(m[2], sc));
+  else if ((m = t.match(/^Print(?: (.*))?$/i)))         I.out.push(interp(m[1] || '', sc));
+  else if ((m = t.match(/^Add (.+) to (\S+)$/i)))       sc.set(m[2], num(m[2], sc) + num(m[1], sc));
+  else if ((m = t.match(/^Subtract (.+) from (\S+)$/i)))sc.set(m[2], num(m[2], sc) - num(m[1], sc));
+  else if ((m = t.match(/^Multiply (.+?) by (.+?) into (\S+)$/i)))
+                                                        sc.set(m[3], num(m[1], sc) * num(m[2], sc));
+  else if ((m = t.match(/^Divide (.+?) by (.+?) into (\S+)$/i))){
+    const d = num(m[2], sc);
+    if (d === 0) throw new Error('Division by zero');
+    sc.set(m[3], num(m[1], sc) / d);
+  }
+  else if ((m = t.match(/^Modulo (.+?) by (.+?) into (\S+)$/i))){
+    const d = num(m[2], sc);
+    if (d === 0) throw new Error('Modulo by zero');
+    sc.set(m[3], num(m[1], sc) % d);
+  }
+  else if ((m = t.match(/^Create list (\S+)$/i)))        sc.set(m[1], []);
+  else if ((m = t.match(/^Append (.+) to (\S+)$/i)))    list(m[2], sc).push(valueOf(m[1], sc));
+  else if ((m = t.match(/^Range from (.+) to (.+) into (\S+)$/i))){
+    const a = num(m[1], sc), b = num(m[2], sc), arr = [];
+    if (a <= b) for (let i = a; i <= b; i++) arr.push(i);
+    else for (let i = a; i >= b; i--) arr.push(i);
+    sc.set(m[3], arr);
+  }
+  else if ((m = t.match(/^Sum of (\S+) into (\S+)$/i)))
+    sc.set(m[2], list(m[1], sc).reduce((x, y) => x + Number(y), 0));
+  else if ((m = t.match(/^Maximum of (\S+) into (\S+)$/i))){
+    const L = list(m[1], sc); if (!L.length) throw new Error('List is empty');
+    sc.set(m[2], Math.max(...L));
+  }
+  else if ((m = t.match(/^Minimum of (\S+) into (\S+)$/i))){
+    const L = list(m[1], sc); if (!L.length) throw new Error('List is empty');
+    sc.set(m[2], Math.min(...L));
+  }
+  else if ((m = t.match(/^Absolute value of (.+) into (\S+)$/i)))
+    sc.set(m[2], Math.abs(num(m[1], sc)));
+  else if ((m = t.match(/^Convert (.+) to (hex|bin|oct|int|float|str) into (\S+)$/i))){
+    const v = valueOf(m[1], sc), n = Number(v), kind = m[2].toLowerCase();
+    let r;
+    if (kind === 'str') r = fmt(v);
+    else {
+      if (isNaN(n)) throw new Error(`Cannot convert "${fmt(v)}" to ${kind}`);
+      const i = Math.trunc(n);
+      r = kind === 'hex' ? '0x' + i.toString(16)
+        : kind === 'bin' ? '0b' + i.toString(2)
+        : kind === 'oct' ? '0o' + i.toString(8)
+        : kind === 'int' ? i : n;
+    }
+    sc.set(m[3], r);
+  }
+  else if ((m = t.match(/^Do (\S+)(?: with (.+?))?(?: into (\S+))?$/i))){
+    const r = call(m[1], m[2], sc);
+    if (m[3]) sc.set(m[3], r);
+  }
+  else if ((m = t.match(/^Return(?: (.+))?$/i)))        throw new Ret(m[1] ? valueOf(m[1], sc) : undefined);
+  else throw new Error(`Unknown command "${t}"`);
+}
+
+function call(name, argStr, sc){
+  const fn = I.fns[name];
+  if (!fn) throw new Error(`Unknown function "${name}"`);
+  const args = argStr ? argStr.split(/\s*(?:,| and )\s*/i).map(a => valueOf(a, sc)) : [];
+  const local = new Scope(I.global);
+  fn.params.forEach((p, i) => local.vars[p] = args[i]);
+  try { exec(fn.body, local); return undefined; }
+  catch (e){ if (e instanceof Ret) return e.v; throw e; }
+}
+
+function list(name, sc){
+  const v = sc.get(name);
+  if (!Array.isArray(v)) throw new Error(`"${name}" is not a list`);
+  return v;
+}
+
+function valueOf(str, sc){
+  str = str.trim();
+  if (sc.find(str)) return sc.get(str);
+  if (/^-?\d+(\.\d+)?$/.test(str)) return Number(str);
+  if (/^(true|false)$/i.test(str)) return str.toLowerCase() === 'true';
+  return interp(str, sc);
+}
+
+function interp(str, sc){
+  return str.split(/(\s+)/).map(w => {
+    const m = w.match(/^([A-Za-z_]\w*)([.,!?;:]*)$/);
+    if (m && sc.find(m[1])) return fmt(sc.get(m[1])) + m[2];
+    return w;
+  }).join('');
+}
+
+function num(str, sc){
+  const v = valueOf(str, sc);
+  const n = typeof v === 'number' ? v : (typeof v === 'string' && v.trim() !== '' ? Number(v) : NaN);
+  if (isNaN(n)) throw new Error(`"${str}" is not a number`);
+  return n;
+}
+
+function truthy(cond, sc){
+  const m = cond.match(/^(.+?) (equals|is greater than|is less than|is at least|is at most) (.+)$/i);
+  if (!m) return !!valueOf(cond, sc);
+  const a = valueOf(m[1], sc), b = valueOf(m[3], sc), op = m[2].toLowerCase();
+  if (op === 'equals') return a == b;
+  if (op === 'is greater than') return a > b;
+  if (op === 'is less than') return a < b;
+  if (op === 'is at least') return a >= b;
+  return a <= b;
+}
+
+function fmt(v){
+  if (Array.isArray(v)) return '[' + v.map(fmt).join(', ') + ']';
+  return String(v);
+}
+
+function typeOf(v){
+  if (Array.isArray(v)) return 'list';
+  if (typeof v === 'boolean') return 'bool';
+  if (typeof v === 'number') return Number.isInteger(v) ? 'int' : 'float';
+  return 'text';
+}
+
+/* ---------- Editor, highlighting, runner ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+const KW = /\b(If|Else|While|For each|Repeat|times|End|Try|Catch|Return|Define|Do)\b|\b(Set|Print|Add|Subtract|Multiply|Divide|Modulo|Create list|Append|Range from|Sum of|Maximum of|Minimum of|Absolute value of|Convert|into|with|from|to|by|in|equals|is greater than|is less than|is at least|is at most)\b|\b(\d+(?:\.\d+)?)\b/gi;
+
+function hl(src){
+  return esc(src).split('\n').map(line => {
+    if (line.trim().startsWith('#')) return `<span class="c">${line}</span>`;
+    return line.replace(KW, (m, c1, c2) => c1 ? `<span class="k">${m}</span>` : c2 ? `<span class="b">${m}</span>` : `<span class="n">${m}</span>`);
+  }).join('\n') + '\n';
+}
+
+function render(){
+  $('hl').innerHTML = hl($('code').value);
+}
+
+function runCode(){
+  const out = [];
+  let g = null, err = null;
+  try {
+    g = new Scope(null);
+    I.global = g; I.out = out; I.fns = {};
+    exec(parse($('code').value), g);
+  } catch (e){
+    err = e instanceof Ret ? 'Return can only be used inside a function' : e.message;
+  }
+  let html = out.map(esc).join('\n');
+  if (err) html += (html ? '\n' : '') + `<span class="err">⚠ ${esc(err)}</span>`;
+  $('console').innerHTML = html || '<span class="muted">(no output)</span>';
+  const rows = g ? Object.entries(g.vars).map(([k, v]) =>
+    `<tr><td>${esc(k)}</td><td>${esc(fmt(v))}</td><td>${typeOf(v)}</td></tr>`).join('') : '';
+  $('vars').innerHTML = rows || '<tr><td colspan="3" class="muted">No variables yet</td></tr>';
+}
+
+const PRESETS = [
+  { name: 'Hello World & Math', code:
+`# Hello World
+Set name to Ada
+Print Hello name
+Set a to 12
+Set b to 5
+Add b to a
+Multiply a by 2 into doubled
+Print Doubled value doubled
+Divide 17 by 5 into q
+Modulo 17 by 5 into r
+Print q and r` },
+  { name: 'Lists & Loops', code:
+`# Lists and loops
+Create list scores
+Append 90 to scores
+Append 75 to scores
+Append 88 to scores
+Sum of scores into total
+Print Total score total
+Repeat 2 times
+Print Keep going
+End
+For each s in scores
+If s is at least 80
+Print s passed
+Else
+Print s needs work
+End
+End
+Maximum of scores into best
+Print Best best` },
+  { name: 'Functions & Conditions', code:
+`# Functions and conditions
+Define greet with person
+Print Hello person
+End
+Do greet with Ada
+Define square with n
+Multiply n by n into result
+Return result
+End
+Do square with 7 into answer
+Print Seven squared is answer
+If answer is greater than 40
+Print Big number
+Else
+Print Small number
+End` },
+  { name: 'Conversions & Error Handling', code:
+`# Conversions, ranges, and Try/Catch
+Set n to 255
+Convert n to hex into hex_val
+Convert n to bin into bin_val
+Print n in hex is hex_val
+Print n in binary is bin_val
+Range from 1 to 5 into nums
+Sum of nums into total
+Print Sum of one to five is total
+Absolute value of -9 into pos
+Print Absolute is pos
+Try
+Divide 10 by 0 into z
+Catch
+Print Caught error error
+End` }
+];
+
+const CHEAT = {
+  'Variables & Math': [
+    ['Set and print', 'Set name to Ada\nPrint Hello name'],
+    ['Arithmetic', 'Set total to 10\nAdd 5 to total\nMultiply total by 2 into doubled\nDivide doubled by 4 into quarter\nModulo 17 by 5 into rest\nPrint quarter and rest']
+  ],
+  'Conditions & Loops': [
+    ['If / Else', 'Set score to 72\nIf score is at least 70\nPrint Pass\nElse\nPrint Retry\nEnd'],
+    ['Repeat & For each', 'Repeat 3 times\nPrint Hip hooray\nEnd\nRange from 1 to 5 into nums\nFor each n in nums\nPrint n\nEnd']
+  ],
+  'Lists & Objects': [
+    ['Create and fill a list', 'Create list fruits\nAppend apple to fruits\nAppend mango to fruits\nPrint fruits'],
+    ['Aggregate a list', 'Create list nums\nAppend 4 to nums\nAppend 9 to nums\nSum of nums into total\nMinimum of nums into smallest\nPrint total smallest']
+  ],
+  'Functions & Error Handling': [
+    ['Define, Do, Return', 'Define double with x\nReturn x\nEnd\nDo double with 21 into answer\nPrint answer'],
+    ['Try / Catch', 'Try\nDivide 1 by 0 into z\nCatch\nPrint Problem error\nEnd']
+  ],
+  'Files, Web & Built-ins': [
+    ['Built-in conversions', 'Convert 255 to hex into hex_val\nPrint hex_val'],
+    ['Built-in ranges', 'Range from 1 to 10 into nums\nSum of nums into total\nPrint total']
+  ]
+};
+
+function renderCheat(active){
+  $('tabs').innerHTML = Object.keys(CHEAT).map(k =>
+    `<button class="tab${k === active ? ' on' : ''}" data-cat="${esc(k)}">${esc(k)}</button>`).join('');
+  $('snips').innerHTML = CHEAT[active].map(([title, code]) => `
+    <div class="card">
+      <div class="snip-head"><h3>${esc(title)}</h3><button class="copy" data-code="${esc(code)}">Copy</button></div>
+      <pre><code>${esc(code)}</code></pre>
+    </div>`).join('');
+}
+
+function copyText(btn, text){
+  const done = () => { btn.textContent = 'Copied ✓'; setTimeout(() => btn.textContent = 'Copy', 1400); };
+  const fallback = () => {
+    const t = document.createElement('textarea');
+    t.value = text; document.body.appendChild(t); t.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    t.remove(); done();
+  };
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, fallback);
+  else fallback();
+}
+
+/* ---------- Wiring ---------- */
+PRESETS.forEach((p, i) => $('preset').add(new Option(p.name, i)));
+$('preset').addEventListener('change', e => {
+  $('code').value = PRESETS[e.target.value].code;
+  render(); runCode();
+});
+
+const code = $('code');
+code.value = PRESETS[0].code;
+code.addEventListener('input', render);
+code.addEventListener('scroll', () => { $('hl').scrollTop = code.scrollTop; $('hl').scrollLeft = code.scrollLeft; });
+code.addEventListener('keydown', e => {
+  if (e.key === 'Tab'){
+    e.preventDefault();
+    const s = code.selectionStart;
+    code.value = code.value.slice(0, s) + '    ' + code.value.slice(code.selectionEnd);
+    code.selectionStart = code.selectionEnd = s + 4;
+    render();
+  }
+});
+
+$('runBtn').addEventListener('click', runCode);
+document.addEventListener('keydown', e => {
+  if (e.key === 'F5'){ e.preventDefault(); runCode(); }
+});
+
+$('tabs').addEventListener('click', e => {
+  const b = e.target.closest('.tab');
+  if (b) renderCheat(b.dataset.cat);
+});
+$('snips').addEventListener('click', e => {
+  const b = e.target.closest('.copy');
+  if (b) copyText(b, b.dataset.code);
+});
+
+renderCheat('Variables & Math');
+render();
+runCode();
+</script>
+</body>
+</html>
